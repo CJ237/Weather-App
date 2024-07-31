@@ -4,28 +4,24 @@ const submitButton = document.querySelector("#submit");
 const ulMenu = document.querySelector("#menu");
 
 let previous = [];
-
-user.addEventListener(
-  "keyup",
-  (getRsult = async () => {
-    const searched = {
-      city: " ",
-    };
-
-    searched["city"] = user.value;
-    let latAndLon = {};
-
-    const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searched.city},{US}&&appid=${apikey}`;
-    const response = await fetch(url);
-    const jsonData = await response.json();
-    localStorage.setItem("jsonData", JSON.stringify(jsonData));
-  })
+user.addEventListener("keyup", function (event){
   
-);
+  const searched = {
+    city: " ",
+  };
+  searched["city"] = user.value;
+  let latAndLon = {};
+  const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searched.city},{US}&&appid=${apikey}`;
+  fetch(url).then((response) => {
+    return response.json();
+  }).then((data)=>{
+    localStorage.setItem("data", JSON.stringify(data));
+  });
+});
 
 submitButton.addEventListener("click", function (event) {
   event.preventDefault();
-  let temp = JSON.parse(localStorage.getItem("jsonData"));
+  let temp = JSON.parse(localStorage.getItem("data"));
 
   const urls = `http://api.openweathermap.org/data/2.5/forecast?lat=${temp[0].lat}&lon=${temp[0].lon}&cnt=16&appid=${apikey}&units=imperial`;
   fetch(urls)
