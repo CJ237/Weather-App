@@ -13,19 +13,20 @@ submitButton.addEventListener("click", function (event) {
   };
   searched["city"] = user.value;
   let latAndLon = {};
-  const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searched.city},{US}&&appid=${apikey}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${searched.city}&appid=${apikey}`;
   fetch(url).then((response) => {
     return response.json();
   }).then((data) => {
-
+    console.log(data);
     localStorage.setItem("data", JSON.stringify(data));
-    latAndLon = data;
-    const urls = `http://api.openweathermap.org/data/2.5/forecast?lat=${latAndLon[0].lat}&lon=${latAndLon[0].lon}&cnt=16&appid=${apikey}&units=imperial`;
+    
+    const urls = `https://api.openweathermap.org/data/2.5/forecast?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${apikey}&units=imperial`;
     fetch(urls)
     .then((response) => {
       return response.json();
     })
     .then((data) => {
+      console.log(data);
       previous.push(data);
       
       localStorage.setItem("previous", JSON.stringify(previous));
@@ -38,110 +39,103 @@ submitButton.addEventListener("click", function (event) {
       ulMenu.appendChild(li);
       li.appendChild(previousCity);
 
-      let temps = "";
-      const date1 = new Date();
-      const date2 = new Date(data.list[0].dt_txt);
-      const date3 = new Date(data.list[1].dt_txt);
-      const date4 = new Date(data.list[2].dt_txt);
-      const date5 = new Date(data.list[3].dt_txt);
-      const date6 = new Date(data.list[4].dt_txt);
-      temps = new Date(date1);
-      temps.setDate(date1.getDate() + 1);
 
-      const dt1 = document.querySelector("#date1");
-      const dt2 = document.querySelector("#date2");
-      const dt3 = document.querySelector("#date3");
-      const dt4 = document.querySelector("#date4");
-      const dt5 = document.querySelector("#date5");
-      const dt6 = document.querySelector("#date6");
+      const card = document.querySelector('#card');
+      card.innerHTML = "";
+      card.innerHTML = `<div class="card mb-4 bg-primary move-left" style="max-width: 540px;">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img id="img1" src="${`https://openweathermap.org/img/wn/${data.list[4].weather[0].icon}@2x.png`}" class="img-fluid rounded-start" alt="">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body text-light text-center">
+            <h5 id="city1" class="card-title">${ data.city.name}</h5>
+            <p id="date1"class="card-text">${'Today'}</p>
+            <p id="temp1" class="card-text">${`Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`}</p>
+            <p id="wind1" class="card-text">${`Wind: ${data.list[0].wind.speed} mph`}</p>
+            <p id="humid1" class="card-text">${`Humidity: ${data.list[0].main.humidity}%`}</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  
+    const date2 = new Date(data.list[5].dt_txt);
+    const date3 = new Date(data.list[13].dt_txt);
+    const date4 = new Date(data.list[21].dt_txt);
+    const date5 = new Date(data.list[29].dt_txt);
+    const date6 = new Date(data.list[36].dt_txt);
+    const carousel = document.querySelector('#carousel');
+    carousel.innerHTML = "";
+    carousel.innerHTML = `<div class="display-flex"><h5>5 Day Forecast</h5></div>
+    <div class="display-middle">
+      <div class="slider">
+        <a href="#slide-1">1</a>
+        <a href="#slide-2">2</a>
+        <a href="#slide-3">3</a>
+        <a href="#slide-4">4</a>
+        <a href="#slide-5">5</a>
 
-      dt1.textContent = 'Today';
-    
-      dt2.textContent = temps.toLocaleDateString();
-      temps = new Date(temps);
-      temps.setDate(temps.getDate() + 1);
-      dt3.textContent = temps.toLocaleDateString();
-      temps = new Date(temps);
-      temps.setDate(temps.getDate() + 1);
-      dt4.textContent = temps.toLocaleDateString();
-      temps = new Date(temps);
-      temps.setDate(temps.getDate() + 1);
-      dt5.textContent = temps.toLocaleDateString();
-      temps = new Date(temps);
-      temps.setDate(temps.getDate() + 1);
-      dt6.textContent = temps.toLocaleDateString();
+        <div class="slides">
+          <div id="slide-1">
+            <div id="card1">
+              
+              <div id="date2">${date2.toLocaleDateString()}</div>
+              <img id="img2"src="${`https://openweathermap.org/img/wn/${data.list[5].weather[0].icon}@2x.png`}"/>
+              <h5 id="city2">${data.city.name}</h5>
+              <p id="temp2">${`Temp: ${data.list[5].main.temp_min}F/ ${data.list[5].main.temp_max}F`}</p>
+              <p id="wind2">${`Wind: ${data.list[5].wind.speed} mph`}</p>
+              <p id="humid2">${`Humidity: ${data.list[5].main.humidity}%`}</p>
+            </div>
+          </div>
+          <div id="slide-2">
+            <div id="card1">
+              <div id="date3">${date3.toLocaleDateString()}</div>
+              <img id="img3" src="${`https://openweathermap.org/img/wn/${data.list[13].weather[0].icon}@2x.png`}"/>
+              <h5 id="city3">${data.city.name}</h5>
+              <p id="temp3">${`Temp: ${data.list[13].main.temp_min}F/ ${data.list[13].main.temp_max}F`}</p>
+              <p id="wind3">${`Wind: ${data.list[13].wind.speed} mph`}</p>
+              <p id="humid3">${`Humidity: ${data.list[13].main.humidity}%`}</p>
+            </div>
+          </div>
+          <div id="slide-3">
+            <div id="card1">
+              <div id="date4">${date4.toLocaleDateString()}</div>
+              <img id="img4"src="${`https://openweathermap.org/img/wn/${data.list[21].weather[0].icon}@2x.png`}"/>
+              <h5 id="city4">${data.city.name}</h5>
+              <p id="temp4">${`Temp: ${data.list[21].main.temp_min}F/ ${data.list[21].main.temp_max}F`}</p>
+              <p id="wind4">${`Wind: ${data.list[21].wind.speed} mph`}</p>
+              <p id="humid4">${`Humidity: ${data.list[21].main.humidity}%`}</p>
+            </div>
+          </div>
+          <div id="slide-4">
+            <div id="card1">
+              <div id="date5">${date5.toLocaleDateString()}</div>
+              <img id="img5" src="${`https://openweathermap.org/img/wn/${data.list[29].weather[0].icon}@2x.png`}"/>
+              <h5 id="city5">${data.city.name}</h5>
+              <p id="temp5">${`Temp: ${data.list[29].main.temp_min}F/ ${data.list[29].main.temp_max}F`}</p>
+              <p id="wind5">${`Wind: ${data.list[29].wind.speed} mph`}</p>
+              <p id="humid5">${`Humidity: ${data.list[29].main.humidity}%`}</p>
+            </div>
+          </div>
+          <div id="slide-5">
+            <div id="card1">
+              <div id="date6">${date6.toLocaleDateString()}</div>
+              <img id="img6" src="${`https://openweathermap.org/img/wn/${data.list[36].weather[0].icon}@2x.png`}"/>
+              <h5 id="city6">${data.city.name}</h5>
+              <p id="temp6">${`Temp: ${data.list[36].main.temp_min}F/ ${data.list[36].main.temp_max}F`}</p>
+              <p id="wind6">${`Wind: ${data.list[36].wind.speed} mph`}</p>
+              <p id="humid6">${`Humidity: ${data.list[36].main.humidity}%`}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
 
-      //create image icon for 5 day weather
-      const img1 = document.querySelector("#img1");
-      const img2 = document.querySelector("#img2");
-      const img3 = document.querySelector("#img3");
-      const img4 = document.querySelector("#img4");
-      const img5 = document.querySelector("#img5");
-      const img6 = document.querySelector("#img6");
-      img1.src = `https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
-      img2.src = `https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
-      img3.src = `https://openweathermap.org/img/wn/${data.list[1].weather[0].icon}@2x.png`;
-      img4.src = `https://openweathermap.org/img/wn/${data.list[2].weather[0].icon}@2x.png`;
-      img5.src = `https://openweathermap.org/img/wn/${data.list[3].weather[0].icon}@2x.png`;
-      img6.src = `https://openweathermap.org/img/wn/${data.list[4].weather[0].icon}@2x.png`;
+
+
+
      
-      // create title of city for 5 day forecast
-      const title1 = document.querySelector("#city1");
-      const title2 = document.querySelector("#city2");
-      const title3 = document.querySelector("#city3");
-      const title4 = document.querySelector("#city4");
-      const title5 = document.querySelector("#city5");
-      const title6 = document.querySelector("#city6");
-      title1.textContent = data.city.name;
-      title2.textContent = data.city.name;
-      title3.textContent = data.city.name;
-      title4.textContent = data.city.name;
-      title5.textContent = data.city.name;
-      title6.textContent = data.city.name;
 
-      // create temperature high and low
-      const temperature1 = document.querySelector("#temp1");
-      const temperature2 = document.querySelector("#temp2");
-      const temperature3 = document.querySelector("#temp3");
-      const temperature4 = document.querySelector("#temp4");
-      const temperature5 = document.querySelector("#temp5");
-      const temperature6 = document.querySelector("#temp6");
-      temperature1.textContent = `Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`;
-      temperature2.textContent = `Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`;
-      temperature3.textContent = `Temp: ${data.list[1].main.temp_min}F/ ${data.list[1].main.temp_max}F`;
-      temperature4.textContent = `Temp: ${data.list[2].main.temp_min}F/ ${data.list[2].main.temp_max}F`;
-      temperature5.textContent = `Temp: ${data.list[3].main.temp_min}F/ ${data.list[3].main.temp_max}F`;
-      temperature6.textContent = `Temp: ${data.list[4].main.temp_min}F/ ${data.list[4].main.temp_max}F`;
-
-      // create wind speed for forecast
-      const wind1 = document.querySelector("#wind1");
-      const wind2 = document.querySelector("#wind2");
-      const wind3 = document.querySelector("#wind3");
-      const wind4 = document.querySelector("#wind4");
-      const wind5 = document.querySelector("#wind5");
-      const wind6 = document.querySelector("#wind6");
-
-      wind1.textContent = `Wind: ${data.list[0].wind.speed} mph`;
-      wind2.textContent = `Wind: ${data.list[0].wind.speed} mph`;
-      wind3.textContent = `Wind: ${data.list[1].wind.speed} mph`;
-      wind4.textContent = `Wind: ${data.list[2].wind.speed} mph`;
-      wind5.textContent = `Wind: ${data.list[3].wind.speed} mph`;
-      wind6.textContent = `Wind: ${data.list[4].wind.speed} mph`;
-      // create humidty for forecast
-      const humidity1 = document.querySelector("#humid1");
-      const humidity2 = document.querySelector("#humid2");
-      const humidity3 = document.querySelector("#humid3");
-      const humidity4 = document.querySelector("#humid4");
-      const humidity5 = document.querySelector("#humid5");
-      const humidity6 = document.querySelector("#humid6");
-
-      humidity1.textContent = `Humidity: ${data.list[0].main.humidity}%`;
-      humidity2.textContent = `Humidity: ${data.list[0].main.humidity}%`;
-      humidity3.textContent = `Humidity: ${data.list[1].main.humidity}%`;
-      humidity4.textContent = `Humidity: ${data.list[2].main.humidity}%`;
-      humidity5.textContent = `Humidity: ${data.list[3].main.humidity}%`;
-      humidity6.textContent = `Humidity: ${data.list[4].main.humidity}%`;
-      
       previousCity.addEventListener('click', function(event) {
         const temp = previousCity.textContent;
         const searched = JSON.parse(localStorage.getItem('previous'));
@@ -159,286 +153,98 @@ submitButton.addEventListener("click", function (event) {
     });
   });
 
-// user.addEventListener("keyup", function (event){
-//   event.preventDefault();
-//   const searched = {
-//     city: " ",
-//   };
-//   searched["city"] = user.value;
-//   let latAndLon = {};
-//   const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searched.city},{US}&&appid=${apikey}`;
-//   fetch(url).then((response) => {
-//     return response.json();
-//   }).then((data) => {
-//     localStorage.setItem("data", JSON.stringify(data));
-//   });
-// });
-
-
-// submitButton.addEventListener("click", function (event) {
-//   event.preventDefault();
-//   const searched = {
-//     city: " ",
-//   };
-//   searched["city"] = user.value;
-//   let latAndLon = {};
-//   const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searched.city},{US}&&appid=${apikey}`;
-//   fetch(url).then((response) => {
-//     return response.json();
-//   }).then((data) => {
-//     localStorage.setItem("data", JSON.stringify(data));
-//     latAndLon = data;
-//   })
-//   console.log(latAndLon);
-//   let temp = JSON.parse(localStorage.getItem('data'));
-//   console.log(temp);
-
-//   const urls = `http://api.openweathermap.org/data/2.5/forecast?lat=${temp[0].lat}&lon=${temp[0].lon}&cnt=16&appid=${apikey}&units=imperial`;
-//   fetch(urls)
-//     .then((response) => {
-//       return response.json();
-//     })
-//     .then((data) => {
-//       console.log(data);
-//       previous.push(data);
-
-//       localStorage.setItem("previous", JSON.stringify(previous));
-//       const previousSearched = JSON.parse(localStorage.getItem("previous"));
-
-//       const li = document.createElement("li");
-//       const previousCity = document.createElement("button");
-//       previousCity.textContent = data.city.name;
-//       previousCity.setAttribute("class", "previous");
-//       ulMenu.appendChild(li);
-//       li.appendChild(previousCity);
-
-     
-      
-//       let temps = "";
-//       const date1 = new Date();
-//       const date2 = new Date(data.list[0].dt_txt);
-//       const date3 = new Date(data.list[1].dt_txt);
-//       const date4 = new Date(data.list[2].dt_txt);
-//       const date5 = new Date(data.list[3].dt_txt);
-//       const date6 = new Date(data.list[4].dt_txt);
-//       temps = new Date(date1);
-//       temps.setDate(date1.getDate() + 1);
-
-//       const dt1 = document.querySelector("#date1");
-//       const dt2 = document.querySelector("#date2");
-//       const dt3 = document.querySelector("#date3");
-//       const dt4 = document.querySelector("#date4");
-//       const dt5 = document.querySelector("#date5");
-//       const dt6 = document.querySelector("#date6");
-
-//       dt1.textContent = 'Today';
-    
-//       dt2.textContent = temps.toLocaleDateString();
-//       temps = new Date(temps);
-//       temps.setDate(temps.getDate() + 1);
-//       dt3.textContent = temps.toLocaleDateString();
-//       temps = new Date(temps);
-//       temps.setDate(temps.getDate() + 1);
-//       dt4.textContent = temps.toLocaleDateString();
-//       temps = new Date(temps);
-//       temps.setDate(temps.getDate() + 1);
-//       dt5.textContent = temps.toLocaleDateString();
-//       temps = new Date(temps);
-//       temps.setDate(temps.getDate() + 1);
-//       dt6.textContent = temps.toLocaleDateString();
-
-//       //create image icon for 5 day weather
-//      // const img1 = document.querySelector("#img1");
-//       const img2 = document.querySelector("#img2");
-//       const img3 = document.querySelector("#img3");
-//       const img4 = document.querySelector("#img4");
-//       const img5 = document.querySelector("#img5");
-//       const img6 = document.querySelector("#img6");
-//       img1.src = `https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
-//       img2.src = `https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
-//       img3.src = `https://openweathermap.org/img/wn/${data.list[1].weather[0].icon}@2x.png`;
-//       img4.src = `https://openweathermap.org/img/wn/${data.list[2].weather[0].icon}@2x.png`;
-//       img5.src = `https://openweathermap.org/img/wn/${data.list[3].weather[0].icon}@2x.png`;
-//       img6.src = `https://openweathermap.org/img/wn/${data.list[4].weather[0].icon}@2x.png`;
-     
-//       // create title of city for 5 day forecast
-//       const title1 = document.querySelector("#city1");
-//       const title2 = document.querySelector("#city2");
-//       const title3 = document.querySelector("#city3");
-//       const title4 = document.querySelector("#city4");
-//       const title5 = document.querySelector("#city5");
-//       const title6 = document.querySelector("#city6");
-//       title1.textContent = data.city.name;
-//       title2.textContent = data.city.name;
-//       title3.textContent = data.city.name;
-//       title4.textContent = data.city.name;
-//       title5.textContent = data.city.name;
-//       title6.textContent = data.city.name;
-
-//       // create temperature high and low
-//       const temperature1 = document.querySelector("#temp1");
-//       const temperature2 = document.querySelector("#temp2");
-//       const temperature3 = document.querySelector("#temp3");
-//       const temperature4 = document.querySelector("#temp4");
-//       const temperature5 = document.querySelector("#temp5");
-//       const temperature6 = document.querySelector("#temp6");
-//       temperature1.textContent = `Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`;
-//       temperature2.textContent = `Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`;
-//       temperature3.textContent = `Temp: ${data.list[1].main.temp_min}F/ ${data.list[1].main.temp_max}F`;
-//       temperature4.textContent = `Temp: ${data.list[2].main.temp_min}F/ ${data.list[2].main.temp_max}F`;
-//       temperature5.textContent = `Temp: ${data.list[3].main.temp_min}F/ ${data.list[3].main.temp_max}F`;
-//       temperature6.textContent = `Temp: ${data.list[4].main.temp_min}F/ ${data.list[4].main.temp_max}F`;
-
-//       // create wind speed for forecast
-//       const wind1 = document.querySelector("#wind1");
-//       const wind2 = document.querySelector("#wind2");
-//       const wind3 = document.querySelector("#wind3");
-//       const wind4 = document.querySelector("#wind4");
-//       const wind5 = document.querySelector("#wind5");
-//       const wind6 = document.querySelector("#wind6");
-
-//       wind1.textContent = `Wind: ${data.list[0].wind.speed} mph`;
-//       wind2.textContent = `Wind: ${data.list[0].wind.speed} mph`;
-//       wind3.textContent = `Wind: ${data.list[1].wind.speed} mph`;
-//       wind4.textContent = `Wind: ${data.list[2].wind.speed} mph`;
-//       wind5.textContent = `Wind: ${data.list[3].wind.speed} mph`;
-//       wind6.textContent = `Wind: ${data.list[4].wind.speed} mph`;
-//       // create humidty for forecast
-//       const humidity1 = document.querySelector("#humid1");
-//       const humidity2 = document.querySelector("#humid2");
-//       const humidity3 = document.querySelector("#humid3");
-//       const humidity4 = document.querySelector("#humid4");
-//       const humidity5 = document.querySelector("#humid5");
-//       const humidity6 = document.querySelector("#humid6");
-
-//       humidity1.textContent = `Humidity: ${data.list[0].main.humidity}%`;
-//       humidity2.textContent = `Humidity: ${data.list[0].main.humidity}%`;
-//       humidity3.textContent = `Humidity: ${data.list[1].main.humidity}%`;
-//       humidity4.textContent = `Humidity: ${data.list[2].main.humidity}%`;
-//       humidity5.textContent = `Humidity: ${data.list[3].main.humidity}%`;
-//       humidity6.textContent = `Humidity: ${data.list[4].main.humidity}%`;
-      
-//       previousCity.addEventListener('click', function(event) {
-//         const temp = previousCity.textContent;
-//         const searched = JSON.parse(localStorage.getItem('previous'));
-//         for(let i = 0; i < previous.length; i++){
-//           if(temp === previous[i].city.name){
-//             previousSearch(previous[i]);
-//           }
-//         }
-        
-//       })
-      
-    
-//     });
-//   const data2 = JSON.parse(localStorage.getItem("previous"));
- 
-// });
 
 function previousSearch(data){    
-  let temps = "";
-  const date1 = new Date();
-  const date2 = new Date(data.list[0].dt_txt);
-  const date3 = new Date(data.list[1].dt_txt);
-  const date4 = new Date(data.list[2].dt_txt);
-  const date5 = new Date(data.list[3].dt_txt);
-  const date6 = new Date(data.list[4].dt_txt);
-  temps = new Date(date1);
-  temps.setDate(date1.getDate() + 1);
+ 
+  const card = document.querySelector('#card');
+  card.innerHTML = "";
+  card.innerHTML = `<div class="card mb-4 bg-primary move-left" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img id="img1" src="${`https://openweathermap.org/img/wn/${data.list[4].weather[0].icon}@2x.png`}" class="img-fluid rounded-start" alt="">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body text-light text-center">
+        <h5 id="city1" class="card-title">${ data.city.name}</h5>
+        <p id="date1"class="card-text">${'Today'}</p>
+        <p id="temp1" class="card-text">${`Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`}</p>
+        <p id="wind1" class="card-text">${`Wind: ${data.list[0].wind.speed} mph`}</p>
+        <p id="humid1" class="card-text">${`Humidity: ${data.list[0].main.humidity}%`}</p>
+      </div>
+    </div>
+  </div>
+</div>`;
 
-  const dt1 = document.querySelector("#date1");
-  const dt2 = document.querySelector("#date2");
-  const dt3 = document.querySelector("#date3");
-  const dt4 = document.querySelector("#date4");
-  const dt5 = document.querySelector("#date5");
-  const dt6 = document.querySelector("#date6");
+const date2 = new Date(data.list[5].dt_txt);
+const date3 = new Date(data.list[13].dt_txt);
+const date4 = new Date(data.list[21].dt_txt);
+const date5 = new Date(data.list[29].dt_txt);
+const date6 = new Date(data.list[36].dt_txt);
+const carousel = document.querySelector('#carousel');
+carousel.innerHTML = "";
+carousel.innerHTML = `<div class="display-flex"><h5>5 Day Forecast</h5></div>
+<div class="display-middle">
+  <div class="slider">
+    <a href="#slide-1">1</a>
+    <a href="#slide-2">2</a>
+    <a href="#slide-3">3</a>
+    <a href="#slide-4">4</a>
+    <a href="#slide-5">5</a>
 
-  dt1.textContent = 'Today';
-  
-  dt2.textContent = temps.toLocaleDateString();
-  temps = new Date(temps);
-  temps.setDate(temps.getDate() + 1);
-  dt3.textContent = temps.toLocaleDateString();
-  temps = new Date(temps);
-  temps.setDate(temps.getDate() + 1);
-  dt4.textContent = temps.toLocaleDateString();
-  temps = new Date(temps);
-  temps.setDate(temps.getDate() + 1);
-  dt5.textContent = temps.toLocaleDateString();
-  temps = new Date(temps);
-  temps.setDate(temps.getDate() + 1);
-  dt6.textContent = temps.toLocaleDateString();
-
-  //create image icon for 5 day weather
-  const img1 = document.querySelector("#img1");
-  const img2 = document.querySelector("#img2");
-  const img3 = document.querySelector("#img3");
-  const img4 = document.querySelector("#img4");
-  const img5 = document.querySelector("#img5");
-  const img6 = document.querySelector("#img6");
-  img1.src = `https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
-  img2.src = `https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
-  img3.src = `https://openweathermap.org/img/wn/${data.list[1].weather[0].icon}@2x.png`;
-  img4.src = `https://openweathermap.org/img/wn/${data.list[2].weather[0].icon}@2x.png`;
-  img5.src = `https://openweathermap.org/img/wn/${data.list[3].weather[0].icon}@2x.png`;
-  img6.src = `https://openweathermap.org/img/wn/${data.list[4].weather[0].icon}@2x.png`;
-
-  // create title of city for 5 day forecast
-  const title1 = document.querySelector("#city1");
-  const title2 = document.querySelector("#city2");
-  const title3 = document.querySelector("#city3");
-  const title4 = document.querySelector("#city4");
-  const title5 = document.querySelector("#city5");
-  const title6 = document.querySelector("#city6");
-  title1.textContent = data.city.name;
-  title2.textContent = data.city.name;
-  title3.textContent = data.city.name;
-  title4.textContent = data.city.name;
-  title5.textContent = data.city.name;
-  title6.textContent = data.city.name;
-
-  // create temperature high and low
-  const temperature1 = document.querySelector("#temp1");
-  const temperature2 = document.querySelector("#temp2");
-  const temperature3 = document.querySelector("#temp3");
-  const temperature4 = document.querySelector("#temp4");
-  const temperature5 = document.querySelector("#temp5");
-  const temperature6 = document.querySelector("#temp6");
-  temperature1.textContent = `Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`;
-  temperature2.textContent = `Temp: ${data.list[0].main.temp_min}F/ ${data.list[0].main.temp_max}F`;
-  temperature3.textContent = `Temp: ${data.list[1].main.temp_min}F/ ${data.list[1].main.temp_max}F`;
-  temperature4.textContent = `Temp: ${data.list[2].main.temp_min}F/ ${data.list[2].main.temp_max}F`;
-  temperature5.textContent = `Temp: ${data.list[3].main.temp_min}F/ ${data.list[3].main.temp_max}F`;
-  temperature6.textContent = `Temp: ${data.list[4].main.temp_min}F/ ${data.list[4].main.temp_max}F`;
-
-  // create wind speed for forecast
-  const wind1 = document.querySelector("#wind1");
-  const wind2 = document.querySelector("#wind2");
-  const wind3 = document.querySelector("#wind3");
-  const wind4 = document.querySelector("#wind4");
-  const wind5 = document.querySelector("#wind5");
-  const wind6 = document.querySelector("#wind6");
-
- wind1.textContent = `Wind: ${data.list[0].wind.speed} mph`;
-  wind2.textContent = `Wind: ${data.list[0].wind.speed} mph`;
-  wind3.textContent = `Wind: ${data.list[1].wind.speed} mph`;
-  wind4.textContent = `Wind: ${data.list[2].wind.speed} mph`;
-  wind5.textContent = `Wind: ${data.list[3].wind.speed} mph`;
-  wind6.textContent = `Wind: ${data.list[4].wind.speed} mph`;
-  // create humidty for forecast
-  const humidity1 = document.querySelector("#humid1");
-  const humidity2 = document.querySelector("#humid2");
-  const humidity3 = document.querySelector("#humid3");
-  const humidity4 = document.querySelector("#humid4");
-  const humidity5 = document.querySelector("#humid5");
-  const humidity6 = document.querySelector("#humid6");
-
-  humidity1.textContent = `Humidity: ${data.list[0].main.humidity}%`;
-  humidity2.textContent = `Humidity: ${data.list[0].main.humidity}%`;
-  humidity3.textContent = `Humidity: ${data.list[1].main.humidity}%`;
-  humidity4.textContent = `Humidity: ${data.list[2].main.humidity}%`;
-  humidity5.textContent = `Humidity: ${data.list[3].main.humidity}%`;
-  humidity6.textContent = `Humidity: ${data.list[4].main.humidity}%`;
-  
+    <div class="slides">
+      <div id="slide-1">
+        <div id="card1">
+          
+          <div id="date2">${date2.toLocaleDateString()}</div>
+          <img id="img2"src="${`https://openweathermap.org/img/wn/${data.list[5].weather[0].icon}@2x.png`}"/>
+          <h5 id="city2">${data.city.name}</h5>
+          <p id="temp2">${`Temp: ${data.list[5].main.temp_min}F/ ${data.list[5].main.temp_max}F`}</p>
+          <p id="wind2">${`Wind: ${data.list[5].wind.speed} mph`}</p>
+          <p id="humid2">${`Humidity: ${data.list[5].main.humidity}%`}</p>
+        </div>
+      </div>
+      <div id="slide-2">
+        <div id="card1">
+          <div id="date3">${date3.toLocaleDateString()}</div>
+          <img id="img3" src="${`https://openweathermap.org/img/wn/${data.list[13].weather[0].icon}@2x.png`}"/>
+          <h5 id="city3">${data.city.name}</h5>
+          <p id="temp3">${`Temp: ${data.list[13].main.temp_min}F/ ${data.list[13].main.temp_max}F`}</p>
+          <p id="wind3">${`Wind: ${data.list[13].wind.speed} mph`}</p>
+          <p id="humid3">${`Humidity: ${data.list[13].main.humidity}%`}</p>
+        </div>
+      </div>
+      <div id="slide-3">
+        <div id="card1">
+          <div id="date4">${date4.toLocaleDateString()}</div>
+          <img id="img4"src="${`https://openweathermap.org/img/wn/${data.list[21].weather[0].icon}@2x.png`}"/>
+          <h5 id="city4">${data.city.name}</h5>
+          <p id="temp4">${`Temp: ${data.list[21].main.temp_min}F/ ${data.list[21].main.temp_max}F`}</p>
+          <p id="wind4">${`Wind: ${data.list[21].wind.speed} mph`}</p>
+          <p id="humid4">${`Humidity: ${data.list[21].main.humidity}%`}</p>
+        </div>
+      </div>
+      <div id="slide-4">
+        <div id="card1">
+          <div id="date5">${date5.toLocaleDateString()}</div>
+          <img id="img5" src="${`https://openweathermap.org/img/wn/${data.list[29].weather[0].icon}@2x.png`}"/>
+          <h5 id="city5">${data.city.name}</h5>
+          <p id="temp5">${`Temp: ${data.list[29].main.temp_min}F/ ${data.list[29].main.temp_max}F`}</p>
+          <p id="wind5">${`Wind: ${data.list[29].wind.speed} mph`}</p>
+          <p id="humid5">${`Humidity: ${data.list[29].main.humidity}%`}</p>
+        </div>
+      </div>
+      <div id="slide-5">
+        <div id="card1">
+          <div id="date6">${date6.toLocaleDateString()}</div>
+          <img id="img6" src="${`https://openweathermap.org/img/wn/${data.list[36].weather[0].icon}@2x.png`}"/>
+          <h5 id="city6">${data.city.name}</h5>
+          <p id="temp6">${`Temp: ${data.list[36].main.temp_min}F/ ${data.list[36].main.temp_max}F`}</p>
+          <p id="wind6">${`Wind: ${data.list[36].wind.speed} mph`}</p>
+          <p id="humid6">${`Humidity: ${data.list[36].main.humidity}%`}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
 }
 
